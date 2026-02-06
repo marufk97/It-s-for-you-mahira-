@@ -150,7 +150,7 @@ const startDate=new Date(year,1,7);
 
 let currentViewDay=today;
 
-/* 🎨 Valentine render (UNCHANGED) */
+/* 🎨 Valentine render (TOP TEXT REMOVED) */
 function renderDay(direction="in"){
   const d=wishes[currentViewDay];
   bgm.src=d.music;
@@ -162,7 +162,6 @@ function renderDay(direction="in"){
 
   content.innerHTML=`
     <div class="${anim}">
-      <div class="topText">Mahira a little surprise for you 💝</div>
       <h1>${d.title}</h1>
       <p>${d.text}</p>
       ${media}
@@ -177,7 +176,7 @@ function renderDay(direction="in"){
   if(currentViewDay<today) nextBtn.onclick=()=>{currentViewDay++;renderDay("right")};
 }
 
-/* ⏳ COUNTDOWN – NO BLINK + FLIP CLOCK */
+/* ⏳ COUNTDOWN (TOP TEXT ONLY HERE) */
 if(now<startDate){
   bgm.src=countdownMusic;
   hearts();
