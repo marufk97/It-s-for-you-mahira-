@@ -59,7 +59,8 @@ img, video{
   <h1>Loading...</h1>
 </div>
 
-<audio id="bgm" loop></audio>
+<!-- 🔊 AUTOPLAY ENABLED (MUTED) -->
+<audio id="bgm" autoplay loop muted></audio>
 
 <script>
 /* 🔔 Notification permission */
@@ -80,6 +81,27 @@ function hearts(){
     setTimeout(()=>h.remove(),6000);
   },400);
 }
+
+/* 🎵 AUTOPLAY WORKAROUND */
+const bgm = document.getElementById("bgm");
+
+function tryAutoPlay(){
+  bgm.muted = true;
+  bgm.play().then(()=>{
+    setTimeout(()=>{
+      bgm.muted = false;
+      bgm.volume = 1;
+    },500);
+  }).catch(()=>{});
+}
+
+window.addEventListener("load", tryAutoPlay);
+
+/* Touch fallback (no button, invisible interaction) */
+document.addEventListener("touchstart",()=>{
+  bgm.muted = false;
+  bgm.play();
+},{once:true});
 
 /* 💖 DATA – local music */
 const wishes = {
@@ -102,12 +124,11 @@ const year = now.getFullYear();
 const startDate = new Date(year,1,7);
 
 const content = document.getElementById("content");
-const bgm = document.getElementById("bgm");
 
 /* ⏳ Countdown */
 if(now < startDate){
   bgm.src = countdownMusic;
-  bgm.play().catch(()=>{});
+  tryAutoPlay();
   hearts();
 
   setInterval(()=>{
@@ -132,8 +153,8 @@ else if(month===1 && day>=7 && day<=14){
   const d=wishes[day];
   hearts();
 
-  bgm.src=d.music;
-  bgm.play().catch(()=>{});
+  bgm.src = d.music;
+  tryAutoPlay();
 
   if(day===13){
     if("vibrate" in navigator){
