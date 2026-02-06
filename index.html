@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine Week Wishes</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#ff4b6e,#ff758c);
+  color:white;
+  text-align:center;
+  overflow:hidden;
+}
+
+.card{
+  background:rgba(255,255,255,0.15);
+  border-radius:20px;
+  padding:20px;
+  max-width:520px;
+  margin:60px auto;
+  backdrop-filter:blur(10px);
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+img{
+  width:100%;
+  max-width:280px;
+  border-radius:15px;
+  margin-top:15px;
+}
+
+.timer{
+  font-size:28px;
+  font-weight:bold;
+  margin-top:10px;
+}
+
+.topText{
+  font-size:20px;
+  font-weight:600;
+  margin-bottom:10px;
+}
+
+/* ❤️ Floating Hearts */
+.heart{
+  position:fixed;
+  bottom:-20px;
+  font-size:20px;
+  animation:floatUp 6s linear infinite;
+}
+
+@keyframes floatUp{
+  from{transform:translateY(0);opacity:1;}
+  to{transform:translateY(-110vh);opacity:0;}
+}
+</style>
+</head>
+<body>
+
+<div class="card" id="content">
+<h1>Loading...</h1>
+</div>
+
+<audio id="bgm" autoplay loop></audio>
+
+<script>
+
+const wishes = {
+  7:{title:"🌹 Rose Day",text:"A rose for you ❤️",gif:"https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",music:"https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8b0a1f7b3.mp3"},
+  8:{title:"💍 Propose Day",text:"Will you be mine forever? 💖",gif:"https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",music:"https://cdn.pixabay.com/download/audio/2022/10/25/audio_946f4dd5b5.mp3"},
+  9:{title:"🍫 Chocolate Day",text:"Life is sweeter with you 😍",gif:"https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif",music:"https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92a9a.mp3"},
+  10:{title:"🧸 Teddy Day",text:"Sending you a soft hug 🧸",gif:"https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif",music:"https://cdn.pixabay.com/download/audio/2021/09/01/audio_3c2b5c2e0d.mp3"},
+  11:{title:"🤞 Promise Day",text:"I promise to stay ❤️",gif:"https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif",music:"https://cdn.pixabay.com/download/audio/2022/03/10/audio_2b2d6e8c3c.mp3"},
+  12:{title:"🤗 Hug Day",text:"A warm hug for you",gif:"https://media.giphy.com/media/od5H3PmEG5EVq/giphy.gif",music:"https://cdn.pixabay.com/download/audio/2022/11/03/audio_57c7b7c9a7.mp3"},
+  13:{title:"😘 Kiss Day",text:"Sending kisses your way",gif:"https://media.giphy.com/media/G3va31oEEnIkM/giphy.gif",music:"https://cdn.pixabay.com/download/audio/2021/10/26/audio_7c1a2c7b6f.mp3"},
+  14:{title:"❤️ Valentine Day",text:"Happy Valentine's Day 💞",gif:"https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif",music:"https://cdn.pixabay.com/download/audio/2022/02/23/audio_d1718f5c0f.mp3"}
+};
+
+// 🎵 Countdown romantic BGM
+const countdownMusic = "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3";
+
+const content = document.getElementById("content");
+const bgm = document.getElementById("bgm");
+
+const now = new Date();
+const year = now.getFullYear();
+const startDate = new Date(year,1,7);
+
+function hearts(){
+  setInterval(()=>{
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="❤️";
+    h.style.left=Math.random()*100+"vw";
+    h.style.fontSize=(15+Math.random()*25)+"px";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+  },400);
+}
+
+function showTimer(){
+  bgm.src = countdownMusic;
+  hearts();
+
+  const target = startDate.getTime();
+
+  setInterval(()=>{
+    const current = new Date().getTime();
+    const diff = target - current;
+
+    if(diff <= 0){ location.reload(); }
+
+    const d = Math.floor(diff/(1000*60*60*24));
+    const h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+    const m = Math.floor((diff%(1000*60*60))/(1000*60));
+    const s = Math.floor((diff%(1000*60))/1000);
+
+    content.innerHTML = `
+      <div class="topText">Mahira a little surprise for you ❤️</div>
+      <h1>⏳ Valentine Week Countdown</h1>
+      <div class="timer">${d}d ${h}h ${m}m ${s}s</div>
+      <p>Love loading... ❤️</p>
+    `;
+  },1000);
+}
+
+const todayDate = now.getDate();
+const todayMonth = now.getMonth();
+
+if(todayMonth === 1 && todayDate >=7 && todayDate <=14){
+  const data = wishes[todayDate];
+  hearts();
+  bgm.src = data.music;
+
+  content.innerHTML = `
+    <h1>${data.title}</h1>
+    <p>${data.text}</p>
+    <img src="${data.gif}" alt="gif">
+  `;
+}else if(now < startDate){
+  showTimer();
+}else{
+  content.innerHTML = "<h1>💖 Valentine Week Finished</h1><p>See you next year!</p>";
+}
+
+</script>
+</body>
+</html>
