@@ -1,11 +1,11 @@
-O<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valentine Week Surprise</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 
 <style>
 body{
@@ -48,22 +48,11 @@ img, video{
   to{transform:translateY(-110vh);opacity:0;}
 }
 
-/* 🎞️ slide animation */
-.slide{ animation:slideIn .45s ease; }
-.slide-left{ animation:slideLeft .45s ease; }
-.slide-right{ animation:slideRight .45s ease; }
-
-@keyframes slideIn{
+/* 🎞️ slide */
+.slide{ animation:fade .4s ease; }
+@keyframes fade{
   from{opacity:0; transform:translateY(15px);}
   to{opacity:1; transform:translateY(0);}
-}
-@keyframes slideLeft{
-  from{opacity:0; transform:translateX(-40px);}
-  to{opacity:1; transform:translateX(0);}
-}
-@keyframes slideRight{
-  from{opacity:0; transform:translateX(40px);}
-  to{opacity:1; transform:translateX(0);}
 }
 
 button{
@@ -71,40 +60,62 @@ button{
   background:#fff;
   color:#ff4b6e;
   border:none;
-  padding:10px 22px;
-  border-radius:22px;
+  padding:12px 24px;
+  border-radius:25px;
   font-size:15px;
   font-weight:600;
   cursor:pointer;
 }
 
-/* ⏳ Flip clock */
-.flip-wrap{
+/* 🎮 GAME STYLE (original design) */
+.gameCard{
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(25px);
+  border-radius:30px;
+  padding:35px 25px 40px;
+  width:370px;
+  max-width:90%;
+  margin:0 auto;
+  box-shadow:0 20px 60px rgba(0,0,0,0.4);
+  position:relative;
+}
+.arrow{
+  position:absolute;
+  top:95px;
+  left:50%;
+  transform:translateX(-50%);
+  width:0;
+  height:0;
+  border-left:16px solid transparent;
+  border-right:16px solid transparent;
+  border-top:28px solid #ffffff;
+  z-index:5;
+}
+.loveReveal{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:radial-gradient(circle at center,
+    rgba(255,255,255,0.12),
+    rgba(0,0,0,0.92)
+  );
+  backdrop-filter:blur(14px);
   display:flex;
+  flex-direction:column;
   justify-content:center;
-  gap:10px;
-  margin-top:10px;
+  align-items:center;
+  transform:scale(0);
+  z-index:100;
+  transition:1s ease;
 }
-.flip{
-  background:rgba(0,0,0,.25);
-  border-radius:12px;
-  padding:10px 8px;
-  min-width:60px;
+.loveReveal h1{
+  font-family:'Playfair Display',serif;
+  font-size:48px;
+  text-shadow:0 0 20px #ffb6c1;
 }
-.flip span{
-  display:block;
-  font-size:22px;
-  font-weight:700;
-  animation:flip .5s ease;
-}
-.flip small{
-  font-size:11px;
-  opacity:.8;
-}
-@keyframes flip{
-  from{transform:rotateX(90deg);opacity:0;}
-  to{transform:rotateX(0);opacity:1;}
-}
+.showLove{ transform:scale(1); }
 </style>
 </head>
 
@@ -114,7 +125,6 @@ button{
 <audio id="bgm" loop></audio>
 
 <script>
-/* ❤️ hearts */
 function hearts(){
   setInterval(()=>{
     const h=document.createElement("div");
@@ -126,93 +136,177 @@ function hearts(){
   },400);
 }
 
-/* 💖 data */
+/* 💖 VALENTINE DATA (SAME AS ORIGINAL) */
 const wishes={
-  7:{title:"🌹 Rose Day",text:"I Can't Give You a Rose Because Rose Could Jealous of You, You are a Beautiful Flower Ever 🌸 Happy Rose Day My Love ❤️",gif:"https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",img:"images/rose.jpg",music:"music/rose.mp3"},
-  8:{title:"💍 Happy Propose Day",text:"I promise to walk with you Mahira, through every chapter of life, hand in hand, heart to heart🤍",gif:"https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",img:"images/propose.jpg",music:"music/propose.mp3"},
-  9:{title:"🍫 Happy Chocolate Day",text:"Every chocolate melts, but my love for you only grows ❤️🍫 😍",gif:"https://media2.giphy.com/media/v1.Y2lkPTZjMDliOTUycHQyd2hja3g4aWJtNjJjZzRndHBpbzVoczJjYjAzMmczOGlzOGdzbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VwrVw4Pty2RP70tvy5/giphy.gif",img:"images/chocolate.jpg",music:"music/chocolate.mp3"},
-  10:{title:"Happy 🧸Teddy Day",text:"You Are Unbelievable Mahira You're Such a Cutie and in Really You Are a 🧸 Happy Teddy Day My Real Teddy 🐻😘",gif:"https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyZ2RvcHF2YnluNnZjYzFodXU2YW5ob3YxZzh2YTkzOGUyeGNlaHNsNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NxC8VtyxqhMtpLoEEN/giphy.gif",img:"images/teddy.jpg",music:"music/teddy.mp3"},
-  11:{title:" Happy Promise Day 🤞",text:"I promise to stay with you no matter what happening around in this world i'll keep you safe and love you till my last breath ❤️",gif:"https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUya3BuOGExNGE1azduc2x4Y2dmdWVwdDUyeGttNjcwczg0cmVzbXpxNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/yjvfyJN1regrQLDxGl/giphy.gif",img:"images/promise.jpg",music:"music/promise.mp3"},
-  12:{title:"Happy Hug Day 🤗",text:"A warm hug from you is all i want today tomorrow and forever, till rest of my life🤗",gif:"https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyeG4wZWVlaGlvZGJ2djZ2Zzd5MXdoc2FrNHFpb3I2dnFxcGFhbHNvYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/IzXiddo2twMmdmU8Lv/giphy.gif",img:"images/hug.jpg",music:"music/hug.mp3"},
-  13:{title:"Happy Kiss Day 😘",text:"Your lips is very sweeter than any sweet snd i want to kiss you every seconds every minutes every hours and every seconds because you lips is my favourite thing which i want to taste everyday 💋",video:"video/kiss.mp4",music:"music/kiss.mp3"},
-  14:{title:"Happy Valentine Day 🌹 ",text:"Mahira you know what i am really lucky to have you in my life, i can't imagine my life without you, i know i am not perfect i did many mistake in my life since i met you but i am still learning how to make you happy, because whenever you are happy i feel some very precious feelings which i can't describe in words but my eyes can, baby you are the most beautiful girl in the entire world, when i look into your eyes i feel drowning, when i look your lips i forget what sugar is, when i look your face worries run far far away from me, when i hold your hand i feel complete, when i grab you in my arms i lost in you, and last but not least when i kissed you i almost forget anything my heartbeat getting fast my hands are shivering in excitement and my mind is empty only you yoy and Y❤️U..HAPPY VALENTINE DAY MY LOVE MY WORLD MY EVERYTHING..I LOVE YOU MAHIRA😘",gif:"https://media2.giphy.com/media/v1.Y2lkPTZjMDliOTUyb2lwaDI2cWJtM3hoZHhpNXM3ZGNqdmE0bjdnenN1ZDA3bTVyeXE5YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wvYNSqBAMDVx8CEYkt/giphy.gif",img:"images/valentine.jpg",music:"music/valentine.mp3"}
+  7:{title:"🌹 Rose Day",text:"You are a Beautiful Flower Ever 🌸 Happy Rose Day My Love ❤️",gif:"https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",img:"images/rose.jpg"},
+  8:{title:"💍 Happy Propose Day",text:"I promise to walk with you Mahira, hand in hand, heart to heart 🤍",gif:"https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",img:"images/propose.jpg"},
+  9:{title:"🍫 Happy Chocolate Day",text:"Every chocolate melts, but my love for you only grows ❤️🍫",gif:"https://media2.giphy.com/media/VwrVw4Pty2RP70tvy5/giphy.gif",img:"images/chocolate.jpg"},
+  10:{title:"🧸 Happy Teddy Day",text:"You are my real teddy 🐻😘",gif:"https://media4.giphy.com/media/NxC8VtyxqhMtpLoEEN/giphy.gif",img:"images/teddy.jpg"},
+  11:{title:"🤞 Happy Promise Day",text:"I promise to love you till my last breath ❤️",gif:"https://media4.giphy.com/media/yjvfyJN1regrQLDxGl/giphy.gif",img:"images/promise.jpg"},
+  12:{title:"🤗 Happy Hug Day",text:"A warm hug from you is all I want forever 🤗",gif:"https://media4.giphy.com/media/IzXiddo2twMmdmU8Lv/giphy.gif",img:"images/hug.jpg"},
+  13:{title:"😘 Happy Kiss Day",text:"Your lips are sweeter than any sweet 💋",video:"video/kiss.mp4"},
+  14:{title:"🌹 Happy Valentine Day",text:"Mahira you are my world, my love, my everything ❤️",gif:"https://media2.giphy.com/media/wvYNSqBAMDVx8CEYkt/giphy.gif",img:"images/valentine.jpg"}
 };
 
-const countdownMusic="music/countdown.mp3";
 const content=document.getElementById("content");
-const bgm=document.getElementById("bgm");
+let currentViewDay=7;
 
-const now=new Date();
-const today=now.getDate();
-const month=now.getMonth();
-const year=now.getFullYear();
-const startDate=new Date(year,1,7);
-
-let currentViewDay=today;
-
-/* 🎨 Valentine render (TOP TEXT REMOVED) */
-function renderDay(direction="in"){
+/* 🎞️ RECAP FUNCTION (RESTORED) */
+function renderRecap(){
+  hearts();
   const d=wishes[currentViewDay];
-  bgm.src=d.music;
 
-  let anim=direction==="left"?"slide-left":direction==="right"?"slide-right":"slide";
   let media=currentViewDay===13
     ? `<video autoplay loop muted playsinline><source src="${d.video}" type="video/mp4"></video>`
     : `<img src="${d.gif}"><img src="${d.img}">`;
 
   content.innerHTML=`
-    <div class="${anim}">
+    <div class="slide">
+      <div class="topText">Mahira a little surprise 💝 (Recap)</div>
       <h1>${d.title}</h1>
       <p>${d.text}</p>
       ${media}
-      <button id="playBtn">For You 💝🎶</button><br>
-      ${currentViewDay>7?'<button id="backBtn">⬅ Back</button>':''}
-      ${currentViewDay<today?'<button id="nextBtn">Next ➡</button>':''}
+      <br>
+      ${currentViewDay>7?'<button onclick="prevDay()">⬅ Back</button>':''}
+      ${currentViewDay<14?'<button onclick="nextDay()">Next ➡</button>':''}
     </div>
   `;
-
-  document.getElementById("playBtn").onclick=()=>bgm.play();
-  if(currentViewDay>7) backBtn.onclick=()=>{currentViewDay--;renderDay("left")};
-  if(currentViewDay<today) nextBtn.onclick=()=>{currentViewDay++;renderDay("right")};
 }
+function prevDay(){ currentViewDay--; renderRecap(); }
+function nextDay(){ currentViewDay++; renderRecap(); }
 
-/* ⏳ COUNTDOWN (TOP TEXT ONLY HERE) */
-if(now<startDate){
-  bgm.src=countdownMusic;
-  hearts();
-
+/* 🎮 OPEN GAME (GAME UNDER PLAY BUTTON) */
+function openGame(){
   content.innerHTML=`
-    <div class="slide">
-      <div class="topText">Mahira a little surprise for you 💝</div>
-      <h1>⏳ Valentine Countdown</h1>
-      <div class="flip-wrap">
-        <div class="flip"><span id="d">0</span><small>Days</small></div>
-        <div class="flip"><span id="h">0</span><small>Hours</small></div>
-        <div class="flip"><span id="m">0</span><small>Min</small></div>
-        <div class="flip"><span id="s">0</span><small>Sec</small></div>
-      </div>
-      <button id="playBtn">For You 💝🎶</button>
-    </div>
+  <div class="gameCard" id="gameBox">
+    <h2 id="question">Do you love me? 💖</h2>
+    <button onclick="answer(true)">Yes 💞</button>
+    <button onclick="answer(false)">No</button>
+    <p id="tryMsg"></p>
+  </div>
+
+  <div id="loveText" class="loveReveal">
+    <h1>I Love You Mahira 🤍</h1>
+    <h2 id="giftText"></h2>
+  </div>
+
+  <br>
+  <button onclick="location.reload()">⬅ Back</button>
   `;
 
-  playBtn.onclick=()=>bgm.play();
+  startGame();
+}
 
-  setInterval(()=>{
-    const diff=startDate-new Date();
-    if(diff<=0) location.reload();
-    d.innerText=Math.floor(diff/(1000*60*60*24));
-    h.innerText=Math.floor((diff/(1000*60*60))%24);
-    m.innerText=Math.floor((diff/(1000*60))%60);
-    s.innerText=Math.floor((diff/1000)%60);
-  },1000);
+/* 💝 FULL GAME CODE ADDED */
+function startGame(){
+  const questions=[
+    "Do you love me? 💖",
+    "Will you never leave me? 🥺",
+    "Will you always stay mine forever? 🤍"
+  ];
+  let qIndex=0;
+  const items=["Lipstick","Kajal","Chocolate","Bag"];
+  const lockedGift = items[Math.floor(Math.random()*items.length)];
+  const lockedIndex = items.indexOf(lockedGift);
+
+  window.answer=function(isYes){
+    if(!isYes){
+      document.getElementById("tryMsg").innerText="Try Again 🤍";
+      return;
+    }
+    qIndex++;
+    document.getElementById("tryMsg").innerText="";
+    if(qIndex<questions.length){
+      document.getElementById("question").innerText=questions[qIndex];
+    }else{
+      startWheel();
+    }
+  }
+
+  function startWheel(){
+    document.getElementById("gameBox").innerHTML=`
+      <div class="topText">Mahira a little surprise for you ❤️</div>
+      <div class="arrow"></div>
+      <canvas id="wheel" width="300" height="300"></canvas>
+      <br>
+      <button id="spinBtn">Spin the Wheel 🎁</button>
+    `;
+
+    const canvas=document.getElementById("wheel");
+    const ctx=canvas.getContext("2d");
+    const colors=["#3b0a1a","#6e1c35","#9e2f4e","#d14d72"];
+    const segmentAngle=360/items.length;
+
+    function drawWheel(showText=false){
+      const arc=Math.PI*2/items.length;
+      for(let i=0;i<items.length;i++){
+        ctx.beginPath();
+        ctx.fillStyle=colors[i];
+        ctx.moveTo(150,150);
+        ctx.arc(150,150,150,arc*i,arc*(i+1));
+        ctx.fill();
+
+        if(showText){
+          ctx.save();
+          ctx.translate(150,150);
+          ctx.rotate(arc*i+arc/2);
+          ctx.fillStyle="#fff";
+          ctx.font="18px Playfair Display";
+          ctx.textAlign="center";
+          ctx.fillText(items[i],90,5);
+          ctx.restore();
+        }
+      }
+    }
+    drawWheel(false);
+
+    document.getElementById("spinBtn").onclick=()=>{
+      const finalAngle=(360*6)+(360-(lockedIndex*segmentAngle)-(segmentAngle/2));
+      const duration=10000;
+      const start=performance.now();
+
+      function animate(now){
+        const progress=(now-start)/duration;
+        if(progress<1){
+          const eased=1-Math.pow(1-progress,3);
+          const angle=finalAngle*eased;
+          ctx.clearRect(0,0,300,300);
+          ctx.save();
+          ctx.translate(150,150);
+          ctx.rotate(angle*Math.PI/180);
+          ctx.translate(-150,-150);
+          drawWheel(false);
+          ctx.restore();
+          requestAnimationFrame(animate);
+        }else{
+          ctx.clearRect(0,0,300,300);
+          ctx.save();
+          ctx.translate(150,150);
+          ctx.rotate(finalAngle*Math.PI/180);
+          ctx.translate(-150,-150);
+          drawWheel(true);
+          ctx.restore();
+          document.getElementById("giftText").innerText="Your Secret Gift: "+lockedGift+" 🎁";
+          setTimeout(()=>{
+            document.getElementById("loveText").classList.add("showLove");
+          },700);
+        }
+      }
+      requestAnimationFrame(animate);
+    };
+  }
 }
-else if(month===1 && today>=7 && today<=14){
-  hearts();
-  renderDay();
-}
-else{
-  content.innerHTML="<h1>💖 Valentine Week Finished</h1>";
-}
+
+/* 🌹 FINAL PAGE (RECAP + PLAY GAME BOTH) */
+hearts();
+content.innerHTML=`
+  <div class="slide">
+    <h1>💖 Valentine Week Finished</h1>
+    <p>But our beautiful memories are still here forever 💝</p>
+    <button onclick="renderRecap()">View Full Recap 💝</button><br>
+    <button onclick="openGame()">Play Game 🎮</button>
+  </div>
+`;
 </script>
 
 </body>
